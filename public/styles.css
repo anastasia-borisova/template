@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 
-body {
+.body {
     display: grid;
     height: 100vh;
     font-family: Helvetica,arial,sans-serif;
@@ -33,7 +33,7 @@ body {
     height: 40px;
     border-radius: 25px;
     padding: 10px;
-    border-color: rgba(0, 0, 0, 0.322);
+    border-color: #00000052;
     border-width: 2px;
     border-style: solid;
 }
@@ -52,7 +52,7 @@ body {
     font-size: 10pt;
     margin-top: 50px;
     padding: 20px;
-    background-color: rgb(235, 232, 232);
+    background-color: #ebe8e8;
 }
 
 .footer__navigation {
@@ -64,10 +64,10 @@ body {
 }
 
 .footer__link {
-    color: black;
+    color: #000000;
 }
 
-.footer__link, .playlist {
+.footer__playlist-link {
     text-decoration: none;
 }
 
@@ -91,11 +91,11 @@ body {
     cursor: pointer;
     padding: 10px;
     border-radius: 7px;
-    color:rgb(84, 87, 87);
+    color:#545757;
 }
 
 .playlist:hover {
-    background-color: rgb(245, 244, 244);
+    background-color: #f5f4f4;
 }
 
 .playlist-image {
