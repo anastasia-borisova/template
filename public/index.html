@@ -18,66 +18,20 @@
         <a href="%PUBLIC_URL%" class="header__logo">
           <img src="%PUBLIC_URL%/photos/spotify-logo.svg" alt="logo" width="240" height="46">
         </a>
-        <input type="search" class="header__search" placeholder="Исполнитель, трек или подкаст">
+        <input type="search" class="header__search" placeholder="Исполнитель, трек или альбом">
       </header>
       <main class="content">
-        <section class="playlist-type">
-          <h2 class="playlist-type__header">Музыка для заботы о себе</h2>
-          <div class="playlists">
-            <a tabindex="0" class="playlist footer__playlist-link" href="https://open.spotify.com/playlist/37i9dQZF1DXdCsscAsbRNz">
-              <img class="playlist-image" src="%PUBLIC_URL%/photos/peace.jpg" alt="playlist-image" width="200" height="220">
-              <p class="playlist-header">Peace</p>
-              <p>Peaceful instumentals to help you keep calm.</p>
-            </a>
-            <a tabindex="0" class="playlist footer__playlist-link" href="https://open.spotify.com/playlist/37i9dQZF1DX6oU7rbE4ffh">
-              <img class="playlist-image" src="%PUBLIC_URL%/photos/breath.jpg" alt="playlist-image" width="200" height="220">
-              <p class="playlist-header">Breathe</p>
-              <p>Take a deep breath and relax.</p>
-            </a>
-            <a tabindex="0" class="playlist footer__playlist-link" href="https://open.spotify.com/playlist/37i9dQZF1DWTRnup1IgL4a">
-              <img class="playlist-image" src="%PUBLIC_URL%/photos/under-the-stars.jpg" alt="playlist-image" width="200" height="220">
-              <p class="playlist-header">Under the Stars</p>
-              <p>Drift off to sleep with accoustic guitar.</p>
-            </a>
-            <a tabindex="0" class="playlist footer__playlist-link" href="https://open.spotify.com/playlist/37i9dQZF1DX9WxEZbyU6MA">
-              <img class="playlist-image" src="%PUBLIC_URL%/photos/calming-choir.jpg" alt="playlist-image" width="200" height="220">
-              <p class="playlist-header">Calming choir</p>
-              <p>Relax to the calming sounds of choral music.</p>
-            </a>
-          </div>
-        </section>
-        <section>
-          <h2 class="playlist-type__header">Настроение</h2>
-          <div class="playlists">
-            <a tabindex="0" class="playlist footer__playlist-link" href="https://open.spotify.com/playlist/37i9dQZF1DX1bREA0Izw7V">
-              <img class="playlist-image" src="%PUBLIC_URL%/photos/жизнь-прекрасна.jpg" alt="playlist-image" width="200" height="220">
-              <p class="playlist-header">Жизнь прекрасна</p>
-              <p>Позитивные песни для отличного настроения.</p>
-            </a>
-            <a tabindex="0" class="playlist footer__playlist-link" href="https://open.spotify.com/playlist/37i9dQZF1DWYK8qmDTv5B3">
-              <img class="playlist-image" src="%PUBLIC_URL%/photos/все-сложно.jpeg" alt="playlist-image" width="200" height="220">
-              <p class="playlist-header">Всё сложно</p>
-              <p>Для тех моментов, когда нет уверенности ни в чём.</p>
-            </a>
-            <a tabindex="0" class="playlist footer__playlist-link" href="https://open.spotify.com/playlist/37i9dQZF1DWZHuNxMieWwk">
-              <img class="playlist-image" src="%PUBLIC_URL%/photos/Хюгге.jpg" alt="playlist-image" width="200" height="220">
-              <p class="playlist-header">Хюгге</p>
-              <p>Уютные треки, чтобы добавить тепла в домашний вечер.</p>
-            </a>
-            <a tabindex="0" class="playlist footer__playlist-link" href="https://open.spotify.com/playlist/37i9dQZF1DX5bRha2EWrYS">
-              <img class="playlist-image" src="%PUBLIC_URL%/photos/плёнка.jpg" alt="playlist-image" width="200" height="220">
-              <p class="playlist-header">плёнка</p>
-              <p>саундтрек твоих лучших снимков</p>
-            </a>
-          </div>
-        </section>
+        <div class="button-container">
+          <button type="button" class="show-all">Показать все</button>
+        </div>
       </main>
       <footer class="footer">
         <nav class="footer__navigation">
-          <a class="footer__link footer__playlist-link" href="https://www.spotify.com/ru-ru/legal/cookies-policy/" target="_blank" rel="noopener">Файлы cookie</a>
-          <a class="footer__link footer__playlist-link" href="https://www.spotify.com/ru-ru/legal/privacy-policy/" target="_blank" rel="noopener">Конфиденциальность</a>
-          <a class="footer__link footer__playlist-link" href="https://support.spotify.com/ru-ru/contact-spotify-legal-form/" target="_blank" rel="noopener">Форма для Ваших обращений</a>
+          <a class="footer__link footer__item-link" href="https://www.spotify.com/ru-ru/legal/cookies-policy/" target="_blank" rel="noopener">Файлы cookie</a>
+          <a class="footer__link footer__item-link" href="https://www.spotify.com/ru-ru/legal/privacy-policy/" target="_blank" rel="noopener">Конфиденциальность</a>
+          <a class="footer__link footer__item-link" href="https://support.spotify.com/ru-ru/contact-spotify-legal-form/" target="_blank" rel="noopener">Форма для Ваших обращений</a>
         </nav>
       </footer>
+      <script type="module" src="%PUBLIC_URL%/script.js"></script>
   </body>
 </html>
