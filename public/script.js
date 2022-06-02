@@ -64,18 +64,11 @@ function playlistsToHtmlElement(playlists, categoryName) {
 * @returns строку с именами исполнителей 
 */
 function artistsToString(artists) {
-  let result = '';
-  artists.forEach(function(artist, index) {
-    result += artist.name;
-    if(artists[index + 1])
-      result += ', ';
-  }
-  );
-  return result;
+  return artists.map((artist) => artist.name).join(', ');
 }
 
 /**
-*  Функция для создания раздела с альбомами
+* Функция для создания раздела с альбомами
 * @param {object[]} albums - массив альбомов
 * @returns раздел, содержащий ссылки на альбомы
 */
@@ -139,11 +132,11 @@ function searchResults(obj) {
     content.insertAdjacentHTML('afterbegin', '<div class="not-found">По вашему запросу ничего не найдено</div>');
   else {
     const fragment = document.createDocumentFragment();
-    if(albums.length !== 0)
+    if(albums.length)
       fragment.appendChild(albumsToHtmlElement(albums));
-    if(artists.length !== 0)
+    if(artists.length)
       fragment.appendChild(artistsToHtmlElement(artists))
-    if(tracks.length !== 0)
+    if(tracks.length)
       fragment.appendChild(tracksToHtml(tracks));
     content.appendChild(fragment);
   }
@@ -153,14 +146,16 @@ function searchResults(obj) {
  * Функция для вывода категорий плейлистов на страницу 
  * Внутри функции создается массив категорий плейлистов
  * Если второй параметр не передан, то выводятся все категории, начиная со start
+ * Функция выполняется в том случае, когда есть токен доступа к api
  * @param {number} start - индекс в массиве категорий плейлистов, с которого начинается вывод
  * @param {number} end - индекс в массиве категорий плейлистов, до которого происходит вывод
  */
 async function showPlaylists(start, end) {
-  clearContent();
-  addButton();
+  checkToken();
   const token = localStorage.getItem('token');
   if(token) {
+    clearContent();
+    addButton();
     const categories = await getCategories(token);
     if(!end)
       end = categories.length;
@@ -199,8 +194,13 @@ content.addEventListener('click', (event) => {
 
 let keyPressTimeout = null;
 
+/**
+ * Функция выполняет поисковый запрос и выводит результаты поиска, в том случае, когда есть токен доступа к api
+ * @param {string} searchQuery - поисковый запрос
+ */
 async function keyPress(searchQuery) {
   keyPressTimeout = null;
+  checkToken();
   const token = localStorage.getItem('token');
   if(token) {
     const queryResult = await search(token, searchQuery);
@@ -223,38 +223,54 @@ input.addEventListener('search', () => {
   showPlaylists(0, 5);
 });
 
+/**
+ * Функция для вывода сообщения об ошибке при отсутствии токена доступа
+ * @param {string} errorMessage - сообщение об ошибке, в котором указана причина отсутсвия токена доступа
+ */
 function showTokenError(errorMessage) {
   content.innerHTML = '';
   content.insertAdjacentHTML("afterbegin", `<div class='error'>Сайт временно недоступен<p>${errorMessage}</p></div>`);
 }
 
+/**
+ * Функция для добавления кнопки Показать все, если она еще не была добавлена
+ */
 function addButton() {
   if(!document.querySelector(".show-all"))
     content.insertAdjacentHTML('afterbegin', `<div class='button-container'><button type='button'` +
     `class='show-all'>Показать все</button></div>`);
 }
 
+/**
+ * Функция для очистки content после появления сообщения об ошибке
+ */
 function clearContent() {
   if(document.querySelector(".error"))
     content.innerHTML = '';
 }
 
+/**
+ * Функция получает токен доступа и его время жизни и добавляет их в локальное хранилище
+ * В случае ошибки при получении токена выводится сообщение и локальное хранилище очищается
+ */
 async function setToken() {
   const token = await getToken();
   if(token.error) {
     localStorage.clear();
-    localStorage.setItem('time', 0);
     showTokenError(token.error);
   }
   else {
     localStorage.setItem('token', token.access_token);
-    localStorage.setItem('time', token.expires_in);
-    showPlaylists(0, 5);
+    localStorage.setItem('time', token.expires_in * 1000 + Date.now);
   }
 }
 
-setToken();
+/**
+ * Функция получает токен, если он еще не был получен или вышло его время жизни
+ */
+function checkToken() {
+  if(!localStorage.getItem('token') || Date.now >= localStorage.getItem('time'))
+    setToken();
+}
 
-setInterval(() => {
-  setToken();
-}, parseInt(localStorage.getItem('time')) * 1000);
+showPlaylists(0, 5);

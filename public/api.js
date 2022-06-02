@@ -1,12 +1,23 @@
 export { getCategories, getToken, getPlaylists, search }
 
-//класс для создания дополнительных настроек запроса
 class Options {
-
+  /**
+   * Класс для создания дополнительных настроек запроса
+   * 
+   * @constructor
+   * @this {Options}
+   * @param {string} token - токен доступа
+   */
   constructor(token) {
     this.token = token;
   }
 
+  /**
+   * Создает дополнительные настройки для GET запросов, включает в себя заголовки 
+   * Authorization и Content-Type
+   * @this {Options}
+   * @returns объект с дополнительными настройками для GET запросов
+  */
   getOptions() {
     return {
       method: 'GET',
@@ -16,7 +27,12 @@ class Options {
       }
     };
   }
-
+  /**
+   * Создает дополнительные настройки для POST запросов, включает в себя заголовки 
+   * Authorization и Content-Type и тело запроса 
+   * @this {Options}
+   * @returns объект с дополнительными настройками для POST запросов
+  */
   postOptions(client_id, client_secret) {
     return {
       method: 'POST',
@@ -73,7 +89,7 @@ async function getCategories(token) {
   const url = 'https://api.spotify.com/v1/browse/categories?limit=10&country=US';
   const options = new Options(token);
   const response = await queryToApi(url, options.getOptions());
-  if(response && response.categories)
+  if(response?.categories)
     return response.categories.items;
 }
 
@@ -87,7 +103,7 @@ async function getPlaylists(token, category_id) {
   const url = `https://api.spotify.com/v1/browse/categories/${category_id}/playlists?limit=10&country=US`;
   const options = new Options(token);
   const response = await queryToApi(url, options.getOptions());
-  if(response && response.playlists)
+  if(response?.playlists)
     return response.playlists.items;
 }
 
