@@ -1,23 +1,19 @@
-import React from 'react';
+import { useState } from "react";
+import Content from "./components/Content";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
 
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <p>
-//           Edit <code>src/App.tsx</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
 
-// export default App;
+function App() {
+  const [searchValue, setSearchValue] = useState('');
+
+  return (
+    <div className="body">
+      <Header searchValue={searchValue} onSearchCallback={setSearchValue}/>
+      <Content searchValue={searchValue} />
+      <Footer />
+    </div>
+  );
+}
+
+export default App;
