@@ -1,6 +1,5 @@
 import Section from "./Section";
-import Items from "./Items";
-import Tracks from "./Tracks";
+import TrackSection from "./TrackSection";
 
 export default function SearchResults(props: { albums: any, artists: any, tracks: any }) {
     const albums = props.albums.items;
@@ -13,11 +12,11 @@ export default function SearchResults(props: { albums: any, artists: any, tracks
       let artistsSection = <></>;
       let tracksSection = <></>;
       if(albums.length)
-        albumsSection = <Section sectionClass="section" header="Альбомы" divClass="items" component={<Items items={albums}/>}/>;
+        albumsSection = <Section header="Альбомы" items={albums} />;
       if(artists.length)
-        artistsSection = <Section sectionClass="section" header="Исполнители" divClass="items" component={<Items items={artists}/>}/>;
+        artistsSection = <Section header="Исполнители" items={artists} />;
       if(tracks.length)
-        tracksSection = <Section sectionClass="track-section" header="Треки" divClass="tracks" component={<Tracks tracks={tracks}/>}/>;
+        tracksSection = <TrackSection items={tracks}/>;
       return <>
         {albumsSection}
         {artistsSection}

@@ -1,6 +1,11 @@
-export default function Section(props: { sectionClass: string, header: string, divClass: string, component: any}) {
-    return <section className={props.sectionClass}>
+import Items from "./Items";
+
+export default function Section(props: { header: string, items: any[]}) {
+    return <section className="section">
               <h2 className="section__header">{props.header}</h2>
-              <div className={props.divClass}>{props.component}</div>
+              <div className="items">
+                  <Items items={props.items}/>
+              </div>
            </section>;
 }
+

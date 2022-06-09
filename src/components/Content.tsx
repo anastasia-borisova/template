@@ -7,7 +7,8 @@ import SearchResults from "./SearchResults";
 export default function Content(props: { searchValue: string }) {
   const [categories, setCategories] = useState([]);
   const [showAll, setShowAll] = useState(false);
-  const [content, setContent] = useState(<></>)
+  const [content, setContent] = useState(<></>);
+  const [buttonText, setButtonText] = useState("Показать все");
 
   useEffect(() => {
     setToken();
@@ -21,8 +22,8 @@ export default function Content(props: { searchValue: string }) {
   }, [showAll]);
 
   useEffect(() => {
-    setContent(<MainPage categories={categories} onClick={buttonClick}/>);
-  }, [categories]);
+    setContent(<MainPage categories={categories} buttonTextContent={buttonText} onClick={buttonClick}/>);
+  }, [categories, buttonText]);
 
   let keyPressTimeout: any = null;
 
@@ -59,11 +60,11 @@ export default function Content(props: { searchValue: string }) {
     const target = event.target as HTMLButtonElement;
     if(target.classList.contains('show-all')) {
       if(target.textContent === 'Показать все') {
-        target.textContent = 'Скрыть';
+        setButtonText('Скрыть');
         setShowAll(true);
       }
       else {
-        target.textContent = 'Показать все';
+        setButtonText('Показать все');
         setShowAll(false);
      }
     }
