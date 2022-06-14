@@ -1,3 +1,5 @@
+import { IMethod, IPOST, IToken, IItem, ISearchResults, IObject } from "./interfaces";
+
 export { getCategories, getToken, getPlaylists, search }
 
 class Options {
@@ -8,7 +10,9 @@ class Options {
    * @this {Options}
    * @param {string} token - токен доступа
    */
-  constructor(token) {
+  token: string; 
+
+  constructor(token: string = "") {
     this.token = token;
   }
 
@@ -18,7 +22,7 @@ class Options {
    * @this {Options}
    * @returns объект с дополнительными настройками для GET запросов
   */
-  getOptions() {
+  getOptions(): IMethod {
     return {
       method: 'GET',
       headers: { 
@@ -33,7 +37,7 @@ class Options {
    * @this {Options}
    * @returns объект с дополнительными настройками для POST запросов
   */
-  postOptions(client_id, client_secret) {
+  postOptions(client_id: string, client_secret: string): IPOST {
     return {
       method: 'POST',
       headers: {
@@ -49,10 +53,10 @@ class Options {
  * Функция для выполнения запросов к api
  * При возникновении ошибки в консоль выводится сообщение
  * @param {string} url - адрес, по которому выполняется запрос
- * @param {Options} init - дополнительные параметры для настройки запроса
+ * @param {object} init - дополнительные параметры для настройки запроса
  * @returns ответ на запрос в формате json
  */
-async function queryToApi(url, init) {
+async function queryToApi(url: string, init: object): Promise<any> {
   try {
     const response = await fetch(url, init);
     if(!response.ok)
@@ -62,7 +66,7 @@ async function queryToApi(url, init) {
       return json;
     }
   }
-  catch(error) {
+  catch(error: any) {
     console.log(error.message);
   }
 }
@@ -71,7 +75,7 @@ async function queryToApi(url, init) {
  * Функция для получения токена доступа 
  * @returns объект, содержащий токен доступа и время его жизни
 */
-async function getToken() {
+async function getToken(): Promise<IToken> {
   const client_id = 'cc54ff5069b04ecbb4cf473f445e9872';
   const client_secret = '5a84d500c04542fe87ca70dee98313fc';
   const url = 'https://accounts.spotify.com/api/token';
@@ -85,12 +89,14 @@ async function getToken() {
  * @param {string} token - токен доступа
  * @returns массив категорий плейлистов Spotify
  */
-async function getCategories(token) {
+async function getCategories(token: string): Promise<IObject[]> {
   const url = 'https://api.spotify.com/v1/browse/categories?limit=10&country=US';
   const options = new Options(token);
   const response = await queryToApi(url, options.getOptions());
-  if(response?.categories)
-    return response.categories.items;
+  let items : IObject[] = [];
+  if(response?.categories) 
+    items = response.categories.items;
+  return items;
 }
 
 /**
@@ -99,12 +105,14 @@ async function getCategories(token) {
 * @param {string} category_id - категория плейлиста
 * @returns массив плейлистов, входящих в категорию category_id
 */
-async function getPlaylists(token, category_id) {
-  const url = `https://api.spotify.com/v1/browse/categories/${category_id}/playlists?limit=10&country=US`;
+async function getPlaylists(token: string, category_id: string): Promise<IItem[]> {
+  const url = `https://api.spotify.com/v1/browse/categories/${category_id}/playlists?limit=10`;
   const options = new Options(token);
   const response = await queryToApi(url, options.getOptions());
+  let items: IItem[] = [];
   if(response?.playlists)
-    return response.playlists.items;
+    items = response.playlists.items;
+  return items;
 }
 
 /**
@@ -113,7 +121,7 @@ async function getPlaylists(token, category_id) {
 * @param {string} searchQuery - поисковый запрос
 * @returns объект, содержащий альбомы, исполнителей и треки, которые соответствуют поисковому запросу
 */
-async function search(token, searchQuery) {
+async function search(token: string, searchQuery: string): Promise<ISearchResults> {
   const url = `https://api.spotify.com/v1/search?q=${searchQuery}&type=album,artist,track`;
   const options = new Options(token);
   const response = await queryToApi(url, options.getOptions());
