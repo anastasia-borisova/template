@@ -1,74 +1,52 @@
-import React, { useState, useEffect } from "react";
-import { setToken, getPlaylistsByCategories, checkToken } from "../utils/helpers";
+import { useState, useEffect } from "react";
+import { getPlaylistsByCategories, checkToken } from "../utils/helpers";
 import { search } from "../utils/api";
 import MainPage from "./MainPage";
 import SearchResults from "./SearchResults";
+import { IPlaylistsByCategory, ISearchResults } from "../utils/interfaces";
 
 export default function Content(props: { searchValue: string }) {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<IPlaylistsByCategory[]>([]);
   const [showAll, setShowAll] = useState(false);
   const [content, setContent] = useState(<></>);
   const [buttonText, setButtonText] = useState("Показать все");
 
   useEffect(() => {
-    setToken();
-  }, []);
-
-  useEffect(() => {
-    getPlaylistsByCategories(showAll).then((result: any) => {
-      if(result)
-        setCategories(result)
+    getPlaylistsByCategories(showAll).then((result: IPlaylistsByCategory[]) => {
+      setCategories(result)
     });
   }, [showAll]);
+
+  const buttonClick = () => {
+    if(!showAll) {
+      setButtonText('Скрыть');
+      setShowAll(true);
+    }
+    else {
+      setButtonText('Показать все');
+      setShowAll(false);
+   }
+  }
 
   useEffect(() => {
     setContent(<MainPage categories={categories} buttonTextContent={buttonText} onClick={buttonClick}/>);
   }, [categories, buttonText]);
 
-  let keyPressTimeout: any = null;
-
-  const keyPress = async(searchQuery: string) => {
-    keyPressTimeout = null;
-    checkToken();
-    const token = localStorage.getItem('token');
-    if(token) {
-      const queryResult = await search(token, searchQuery);
-      return queryResult;
-    }
-  }
-
-  const setSearchResult = (searchValue: string) => {
+  const setSearchResult = async (searchValue: string) => {
     if(searchValue) {
-      if(keyPressTimeout) {
-        clearTimeout(keyPressTimeout);
-      }
-      keyPressTimeout = setTimeout(() => {
-        keyPress(searchValue).then((result) => {
-          if(result)
-            setContent(<SearchResults albums={result.albums} artists={result.artists} tracks={result.tracks}/>)
-        });
-      }, 150);
+      await checkToken();
+      const token = localStorage.getItem('token');
+      if(token) {
+        search(token, searchValue).then((result: ISearchResults) => {
+          setContent(<SearchResults albums={result.albums.items} artists={result.artists.items} tracks={result.tracks.items}/>);
+        })
+      }     
     }
   }
 
   useEffect(() => {
     setSearchResult(props.searchValue);
   }, [props.searchValue]);
-
-
-  const buttonClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    const target = event.target as HTMLButtonElement;
-    if(target.classList.contains('show-all')) {
-      if(target.textContent === 'Показать все') {
-        setButtonText('Скрыть');
-        setShowAll(true);
-      }
-      else {
-        setButtonText('Показать все');
-        setShowAll(false);
-     }
-    }
-  }
 
   return (
     <main className="content">

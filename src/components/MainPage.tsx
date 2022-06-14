@@ -1,10 +1,11 @@
 import React from "react"
+import { IPlaylistsByCategory } from "../utils/interfaces"
 import Playlists from "./Playlists"
 
-export default function MainPage(props: { categories: any[], buttonTextContent: string, onClick : (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void}) {
+export default function MainPage(props: { categories: IPlaylistsByCategory[], buttonTextContent: string, onClick : () => void}) {
     return <>
     <div className="button-container">
-        <button type="button" className="show-all" onClick={(event) => { props.onClick(event) } }>
+        <button type="button" className="show-all" onClick={() => { props.onClick() } }>
           {props.buttonTextContent}
         </button>
     </div>

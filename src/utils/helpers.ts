@@ -1,4 +1,5 @@
 import { getToken, getCategories, getPlaylists } from "./api";
+import { IPlaylistsByCategory, IObject, IItem } from "./interfaces";
 export { artistsToString, createMarkup, setToken, getPlaylistsByCategories, checkToken }
 
 /**
@@ -6,7 +7,7 @@ export { artistsToString, createMarkup, setToken, getPlaylistsByCategories, chec
 * @param artists - массив с именами исполнителей
 * @returns строку с именами исполнителей через запятую
 */
-function artistsToString(artists: any[]) {
+function artistsToString(artists: IObject[]): string {
     return artists.map((artist) => artist.name).join(', ');
 }
 
@@ -16,18 +17,17 @@ function artistsToString(artists: any[]) {
  * @param str строка, которая может содержать html 
  * @returns объект с ключом __html и строкой
  */
-function createMarkup(str: string) {
+function createMarkup(str: string): { __html: string } {
     return {__html: str};
 }
 
 /**
  * Функция получает токен доступа и его время жизни и добавляет их в локальное хранилище
  */
-async function setToken() {
+async function setToken(): Promise<void> {
     const token = await getToken();
-    if(token.error) {
+    if(!token.access_token) 
       localStorage.clear();
-    }
     else {
       localStorage.setItem('token', token.access_token);
       localStorage.setItem('time', (token.expires_in * 1000 + Date.now()).toString());
@@ -37,9 +37,9 @@ async function setToken() {
 /**
  * Функция получает токен, если он еще не был получен или вышло его время жизни
  */
-function checkToken() {
-    if(!localStorage.getItem('token') || Date.now() >= parseInt(localStorage.getItem('time') || ''))
-      setToken();
+async function checkToken(): Promise<void> {
+    if(!localStorage.getItem('token') || Date.now() >= parseInt(localStorage.getItem('time') || '')) 
+      await setToken();
 }
 
 /**
@@ -48,21 +48,21 @@ function checkToken() {
  * иначе добавляются первые пять категорий
  * @returns массив объектов, которые состоят из названия категории плейлистов и массива плейлистов
  */
-async function getPlaylistsByCategories(showAllCategories: boolean) {
-    checkToken();
+async function getPlaylistsByCategories(showAllCategories: boolean): Promise<IPlaylistsByCategory[]> {
+    await checkToken();
     const token = localStorage.getItem('token');
+    const playlistsByCategory: IPlaylistsByCategory[] = [];
     if(token) {
-    const categories = await getCategories(token);
-    let end = 5;
-    if(showAllCategories)
-      end = categories.length;
-    const playlistsByCategory = [];
-    for(let i = 0; i < end; i++) {
-      const playlists = await getPlaylists(token, categories[i].id);
-      if(playlists && playlists.length > 0) {
-        playlistsByCategory.push({ name: categories[i].name, playlists : playlists });
+      const categories = await getCategories(token);
+      let end = 5;
+      if(showAllCategories)
+        end = categories.length;
+      for(let i = 0; i < end; i++) {
+        const playlists : IItem[] = await getPlaylists(token, categories[i].id);
+        if(playlists && playlists.length > 0) {
+          playlistsByCategory.push({ id: categories[i].id, name: categories[i].name, playlists : playlists });
       }  
     }
-    return playlistsByCategory;
-    }
+  }
+  return playlistsByCategory;
 }
